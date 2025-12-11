@@ -13,12 +13,21 @@ import SwiftUI
 
 @main
 struct PlacePinApp: App {
-    @StateObject private var placeListViewModel = PlaceListViewModel()
+    
+    // MARK: - States and Dependancies
+    
+    let userLocationViewModel = UserLocationViewModel()
+    let mapViewModel = MapViewModel()
+    let router = Router()
+    
+    // MARK: - Body
     
     var body: some Scene {
         WindowGroup {
-            PlaceListView()
-                .environmentObject(placeListViewModel)
+            MapView()
+                .environmentObject(userLocationViewModel)
+                .environmentObject(mapViewModel)
+                .environmentObject(router)
         }
     }
 }
