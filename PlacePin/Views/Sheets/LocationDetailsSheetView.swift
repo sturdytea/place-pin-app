@@ -26,7 +26,6 @@ struct LocationDetailsSheetView: View {
     @State var isPresented: Bool
     @Binding var areGettingDirections: Bool
     @State private var lookAroundScene: MKLookAroundScene?
-//    @State private var eta: String?
     
     // MARK: - Body
     
@@ -78,7 +77,7 @@ struct LocationDetailsSheetView: View {
                         backgroundColor: .green,
                         action: {
                             areGettingDirections = true
-                            router.isSheetPresented = false
+                            router.sheetView = .directions
                             
                             guard
                                 let destination = item,
@@ -88,7 +87,6 @@ struct LocationDetailsSheetView: View {
                                 return
                             }
                             mapViewModel.fetchRoute(to: destination, userCoordinate: userCoordinate)
-                            isPresented = false
                         })
                     Spacer()
                 }

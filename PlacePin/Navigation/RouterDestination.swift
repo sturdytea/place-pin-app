@@ -10,5 +10,5 @@
     
 
 public enum RouterDestination: Hashable {
-    case home, placeDetails
+    case home, placeDetails, directions 
 }

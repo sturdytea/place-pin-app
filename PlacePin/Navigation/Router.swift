@@ -13,7 +13,7 @@ import MapKit
 import SwiftUI
 
 enum SheetView {
-    case home, placeDetails
+    case home, placeDetails, directions
 }
 
 @MainActor

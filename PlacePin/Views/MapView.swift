@@ -93,6 +93,8 @@ struct MapView: View {
                 isPresented: router.isSheetPresented,
                 areGettingDirections: $areGettingDirections
             )
+        case .directions:
+            DirectionsSheetView()
         }
     }
     
@@ -105,6 +107,8 @@ struct MapView: View {
             [.fraction(0.25), .medium, .large]
         case .placeDetails:
             [.fraction(0.25), .medium, .fraction(0.95)]
+        case .directions:
+            [.fraction(0.15)]
         }
     }
     
@@ -114,6 +118,8 @@ struct MapView: View {
                 .enabled(upThrough: .fraction(0.25))
         case .placeDetails:
                 .enabled(upThrough: .fraction(0.25))
+        case .directions:
+                .enabled(upThrough: .fraction(0.15))
         }
     }
     
