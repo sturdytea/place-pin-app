@@ -18,6 +18,7 @@ struct RootTabView: View {
     @EnvironmentObject var locationViewModel: UserLocationViewModel
     @EnvironmentObject var router: Router
     @EnvironmentObject var mapViewModel: MapViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     // MARK: - Body
     
@@ -40,4 +41,5 @@ struct RootTabView: View {
         .environmentObject(UserLocationViewModel())
         .environmentObject(MapViewModel())
         .environmentObject(Router())
+        .environmentObject(AuthViewModel())
 }

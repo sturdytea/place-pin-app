@@ -19,6 +19,7 @@ struct PlacePinApp: App {
     let userLocationViewModel = UserLocationViewModel()
     let mapViewModel = MapViewModel()
     let router = Router()
+    @StateObject private var authViewModel = AuthViewModel()
     
     // MARK: - Body
     
@@ -28,6 +29,10 @@ struct PlacePinApp: App {
                 .environmentObject(userLocationViewModel)
                 .environmentObject(mapViewModel)
                 .environmentObject(router)
+                .environmentObject(authViewModel)
+                .onAppear {
+                    authViewModel.restoreSession()
+                }
         }
     }
 }
