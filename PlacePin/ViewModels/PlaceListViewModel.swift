@@ -8,8 +8,8 @@
 // GitHub: https://github.com/sturdytea
 //
     
-import Foundation
 
+import Foundation
 
 @MainActor
 class PlaceListViewModel: ObservableObject {

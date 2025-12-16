@@ -21,6 +21,7 @@ struct SearchSheetView: View {
     @EnvironmentObject var mapViewModel: MapViewModel
     
     // MARK: - Properties
+    
     @State private var searchQuery = ""
     
     // MARK: - Body 

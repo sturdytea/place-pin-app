@@ -7,9 +7,9 @@
 // GitHub: https://github.com/sturdytea
 //
     
+
 import MapKit
 import SwiftUI
-
 
 struct MapView: View {
     
@@ -30,6 +30,7 @@ struct MapView: View {
     @State private var routeDestination:MKMapItem?
     
     // MARK: - Body
+    
     var body: some View {
         ZStack {
             mapContent
@@ -59,6 +60,7 @@ struct MapView: View {
     }
     
     // MARK: - Map Content
+    
     private var mapContent: some View {
         Map(initialPosition: cameraPosition, selection: $mapViewModel.selectedItem) {
             ForEach(mapViewModel.searchResults, id: \.self) { result in
@@ -79,6 +81,7 @@ struct MapView: View {
     }
     
     // MARK: - Sheet Content
+    
     @ViewBuilder
     private var sheetContent: some View {
         switch router.sheetView {

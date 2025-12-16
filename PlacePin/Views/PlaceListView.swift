@@ -8,9 +8,11 @@
 // GitHub: https://github.com/sturdytea
 //
     
+
 import SwiftUI
 
 struct PlaceListView: View {
+    
     @EnvironmentObject var viewModel: PlaceListViewModel
     @State private var showingAddPlace = false
     

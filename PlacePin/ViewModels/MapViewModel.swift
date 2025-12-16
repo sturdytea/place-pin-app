@@ -8,10 +8,10 @@
 // GitHub: https://github.com/sturdytea
 //
     
+
 import MapKit
 import Foundation
 import CoreLocation
-
 
 class MapViewModel: ObservableObject {
     
