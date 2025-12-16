@@ -63,4 +63,15 @@ class MapViewModel: ObservableObject {
             }
         }
     }
+    
+    func clearRoute() {
+        route = nil
+        routeDestination = nil
+        isRouteDisplaying = false
+    }
+    
+    func deselectItem() {
+        selectedItem = nil
+        routeDestination = nil 
+    }
 }

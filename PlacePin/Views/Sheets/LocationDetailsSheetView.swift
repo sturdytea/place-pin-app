@@ -52,6 +52,7 @@ struct LocationDetailsSheetView: View {
                             router.selectedItem = item
                             router.sheetView = .home
                             router.isSheetPresented = true
+                            mapViewModel.deselectItem()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .resizable()

@@ -23,7 +23,6 @@ struct MapView: View {
     
     @State private var cameraPosition = MapCameraPosition.userLocation(fallback: .automatic)
     @State private var searchQuery = ""
-    @State private var mapSelection: MKMapItem?
     @State private var isPresented = false
     @State private var areGettingDirections = false
     @State private var isRouteDisplaying = false
@@ -37,12 +36,13 @@ struct MapView: View {
         }
         .environmentObject(locationViewModel)
         .environmentObject(router)
-        .onChange(of: mapSelection) { oldValue, newValue in
+        .onChange(of: mapViewModel.selectedItem) { oldValue, newValue in
             isPresented = newValue != nil
             if newValue != nil {
                 router.selectedItem = newValue
                 router.sheetView = .placeDetails
                 router.isSheetPresented = true
+                mapViewModel.clearRoute()
             }
         }
         .sheet(isPresented: $router.isSheetPresented) {
@@ -60,7 +60,7 @@ struct MapView: View {
     
     // MARK: - Map Content
     private var mapContent: some View {
-        Map(initialPosition: cameraPosition, selection: $mapSelection) {
+        Map(initialPosition: cameraPosition, selection: $mapViewModel.selectedItem) {
             ForEach(mapViewModel.searchResults, id: \.self) { result in
                 let placemark = result.placemark
                 Marker(placemark.name ?? "", coordinate: placemark.coordinate)
