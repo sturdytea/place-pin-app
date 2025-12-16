@@ -43,7 +43,6 @@ struct MapView: View {
                 router.selectedItem = newValue
                 router.sheetView = .placeDetails
                 router.isSheetPresented = true
-                fetchRoute()
             }
         }
         .sheet(isPresented: $router.isSheetPresented) {
@@ -67,7 +66,7 @@ struct MapView: View {
                 Marker(placemark.name ?? "", coordinate: placemark.coordinate)
             }
             
-            if let route {
+            if let route = mapViewModel.route {
                 MapPolyline(route.polyline)
                     .stroke(.blue, lineWidth: 6)
             }
@@ -88,7 +87,7 @@ struct MapView: View {
         case .placeDetails:
             LocationDetailsSheetView(
                 item: $router.selectedItem,
-                isPresented: $isPresented,
+                isPresented: router.isSheetPresented,
                 areGettingDirections: $areGettingDirections
             )
         }
@@ -116,29 +115,6 @@ struct MapView: View {
     }
     
     // MARK: - Helpers
-    
-    private func fetchRoute() {
-        if let mapSelection {
-            let request = MKDirections.Request()
-
-            request.destination = mapSelection
-            
-            Task {
-                let result = try await MKDirections(request: request).calculate()
-                route = result.routes.first
-                routeDestination = mapSelection
-                
-                withAnimation(.snappy) {
-                    isRouteDisplaying = true
-                    isPresented = false
-                    
-                    if let rect = route?.polyline.boundingMapRect, isRouteDisplaying {
-                        cameraPosition = .rect(rect)
-                    }
-                }
-            }
-        }
-    }
 }
 
 #Preview {

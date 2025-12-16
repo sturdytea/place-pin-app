@@ -23,9 +23,10 @@ struct LocationDetailsSheetView: View {
     // MARK: - Variables
     
     @Binding var item: MKMapItem?
-    @Binding var isPresented: Bool
+    @State var isPresented: Bool
     @Binding var areGettingDirections: Bool
     @State private var lookAroundScene: MKLookAroundScene?
+//    @State private var eta: String?
     
     // MARK: - Body
     
@@ -46,7 +47,6 @@ struct LocationDetailsSheetView: View {
                         }
                         Spacer()
                         Button {
-//                            router.clear()
                             isPresented.toggle()
                             item = nil
                             router.selectedItem = item
@@ -58,7 +58,7 @@ struct LocationDetailsSheetView: View {
                                 .frame(width: 24, height: 24)
                                 .foregroundStyle(.gray, Color(.systemGray6))
                         }
-                    }
+                    } // HStack
                     if let scene = lookAroundScene {
                         LookAroundPreview(initialScene: scene)
                             .frame(height: 200)
@@ -67,43 +67,32 @@ struct LocationDetailsSheetView: View {
                     } else {
                         EmptyView()
                     }
-                    
-                    
-                }
+                } // VStack
             }
-            .padding(.horizontal)
-            // TODO: Implement these buttons 
-            //            VStack {
-            //                Spacer()
-            //                HStack(spacing: 24) {
-            //                    Button {
-            //                        if let item {
-            //                            item.openInMaps()
-            //                        }
-            //                    } label: {
-            //                        Text("Open Maps")
-            //                            .font(.headline)
-            //                            .padding()
-            //                            .background(.blue)
-            //                            .cornerRadius(14)
-            //                            .foregroundStyle(.white)
-            //                            .frame(width: 170, height: 48)
-            //                    }
-            //                    Spacer()
-            //                    Button {
-            //                        areGettingDirections = true
-            //                        isPresented = false
-            //                    } label: {
-            //                        Text("Get Direction")
-            //                            .padding()
-            //                            .font(.headline)
-            //                            .background(.green)
-            //                            .cornerRadius(14)
-            //                            .foregroundStyle(.white)
-            //                            .frame(width: 170, height: 48)
-            //                    }
-            //                }
-            //            }
+            VStack {
+                Spacer()
+                HStack(alignment: .bottom) {
+                    RoundImageButton(
+                        imageName: "arrow.turn.up.right",
+                        backgroundColor: .green,
+                        action: {
+                            areGettingDirections = true
+                            router.isSheetPresented = false
+                            
+                            guard
+                                let destination = item,
+                                let userCoordinate = locationViewModel.coordinate
+                            else {
+                                print("Missing destination or user location")
+                                return
+                            }
+                            mapViewModel.fetchRoute(to: destination, userCoordinate: userCoordinate)
+                            isPresented = false
+                        })
+                    Spacer()
+                }
+                .padding(.vertical, 8)
+            }
         }
         .padding()
         .onAppear {
@@ -116,7 +105,7 @@ struct LocationDetailsSheetView: View {
     
     // MARK: - Helpers
     
-    func fetchLookAroundPreview() {
+    private func fetchLookAroundPreview() {
         if let item {
             lookAroundScene = nil
             Task {
@@ -128,7 +117,7 @@ struct LocationDetailsSheetView: View {
 }
 
 #Preview {
-    LocationDetailsSheetView(item: .constant(nil), isPresented: .constant(false), areGettingDirections: .constant(false))
+    LocationDetailsSheetView(item: .constant(nil), isPresented: true, areGettingDirections: .constant(false))
         .environmentObject(UserLocationViewModel())
         .environmentObject(MapViewModel())
         .environmentObject(Router())
