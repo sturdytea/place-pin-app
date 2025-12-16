@@ -10,6 +10,7 @@
 
 import MapKit
 import SwiftUI
+import BottomSheet
 
 struct MapView: View {
     
@@ -28,6 +29,7 @@ struct MapView: View {
     @State private var isRouteDisplaying = false
     @State private var route: MKRoute?
     @State private var routeDestination:MKMapItem?
+    @State private var bottomSheetPosition: BottomSheetPosition = .relative(0.25)
     
     // MARK: - Body
     
@@ -46,13 +48,24 @@ struct MapView: View {
                 mapViewModel.clearRoute()
             }
         }
-        .sheet(isPresented: $router.isSheetPresented) {
+//        .sheet(isPresented: $router.isSheetPresented) {
+//            sheetContent
+//                .environmentObject(locationViewModel)
+//                .environmentObject(mapViewModel)
+//                .environmentObject(router)
+//                .presentationDragIndicator(.visible)
+//                .presentationDetents(sheetDetents)
+//                .presentationBackgroundInteraction(sheetBackgroundInteraction)
+//                .presentationCornerRadius(25)
+//                .interactiveDismissDisabled()
+//        }
+        .bottomSheet(bottomSheetPosition: $bottomSheetPosition, switchablePositions: sheetDetents) {
             sheetContent
                 .environmentObject(locationViewModel)
                 .environmentObject(mapViewModel)
                 .environmentObject(router)
                 .presentationDragIndicator(.visible)
-                .presentationDetents(sheetDetents)
+//                .presentationDetents(sheetDetents)
                 .presentationBackgroundInteraction(sheetBackgroundInteraction)
                 .presentationCornerRadius(25)
                 .interactiveDismissDisabled()
@@ -101,14 +114,14 @@ struct MapView: View {
     // MARK: - Sheet Helpers
     
     /// Stopping point or height for a modal sheet presentation
-    private var sheetDetents: Set<PresentationDetent> {
+    private var sheetDetents: [BottomSheetPosition] {
         switch router.sheetView {
         case .home:
-            [.fraction(0.25), .medium, .large]
+            [.relative(0.25), .relative(0.45), .relative(0.95)]
         case .placeDetails:
-            [.fraction(0.25), .medium, .fraction(0.95)]
+            [.relative(0.25), .relative(0.45), .relative(0.95)]
         case .directions:
-            [.fraction(0.15)]
+            [.relative(0.15)]
         }
     }
     

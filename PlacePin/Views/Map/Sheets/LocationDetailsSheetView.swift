@@ -30,7 +30,7 @@ struct LocationDetailsSheetView: View {
     // MARK: - Body
     
     var body: some View {
-        ZStack {
+        VStack {
             ScrollView(.vertical) {
                 VStack {
                     HStack {
@@ -59,6 +59,27 @@ struct LocationDetailsSheetView: View {
                                 .foregroundStyle(.gray, Color(.systemGray6))
                         }
                     } // HStack
+                    HStack(alignment: .bottom) {
+                        RoundImageButton(
+                            imageName: "arrow.turn.up.right",
+                            backgroundColor: .green,
+                            action: {
+                                areGettingDirections = true
+                                router.sheetView = .directions
+                                
+                                guard
+                                    let destination = item,
+                                    let userCoordinate = locationViewModel.coordinate
+                                else {
+                                    print("Missing destination or user location")
+                                    return
+                                }
+                                mapViewModel.fetchRoute(to: destination, userCoordinate: userCoordinate)
+                            })
+                        Spacer()
+                    }
+                    .padding(.vertical, 8)
+
                     if let scene = lookAroundScene {
                         LookAroundPreview(initialScene: scene)
                             .frame(height: 200)
@@ -69,29 +90,8 @@ struct LocationDetailsSheetView: View {
                     }
                 } // VStack
             }
-            VStack {
-                Spacer()
-                HStack(alignment: .bottom) {
-                    RoundImageButton(
-                        imageName: "arrow.turn.up.right",
-                        backgroundColor: .green,
-                        action: {
-                            areGettingDirections = true
-                            router.sheetView = .directions
-                            
-                            guard
-                                let destination = item,
-                                let userCoordinate = locationViewModel.coordinate
-                            else {
-                                print("Missing destination or user location")
-                                return
-                            }
-                            mapViewModel.fetchRoute(to: destination, userCoordinate: userCoordinate)
-                        })
-                    Spacer()
-                }
-                .padding(.vertical, 8)
-            }
+//            VStack {
+//            }
         }
         .padding()
         .onAppear {

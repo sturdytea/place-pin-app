@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B8C1DA172EF208C5001C961A /* BottomSheet in Frameworks */ = {isa = PBXBuildFile; productRef = B8C1DA162EF208C5001C961A /* BottomSheet */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B896C5C72EDF215C00BC2E86 /* PlacePin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlacePin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8C1DA172EF208C5001C961A /* BottomSheet in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = PlacePin;
 			packageProductDependencies = (
+				B8C1DA162EF208C5001C961A /* BottomSheet */,
 			);
 			productName = PlacePin;
 			productReference = B896C5C72EDF215C00BC2E86 /* PlacePin.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = B896C5BE2EDF215C00BC2E86;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B8C1DA152EF208C5001C961A /* XCRemoteSwiftPackageReference "BottomSheet" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B896C5C82EDF215C00BC2E86 /* Products */;
 			projectDirPath = "";
@@ -341,6 +350,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B8C1DA152EF208C5001C961A /* XCRemoteSwiftPackageReference "BottomSheet" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lucaszischka/BottomSheet";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B8C1DA162EF208C5001C961A /* BottomSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B8C1DA152EF208C5001C961A /* XCRemoteSwiftPackageReference "BottomSheet" */;
+			productName = BottomSheet;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B896C5BF2EDF215C00BC2E86 /* Project object */;
 }

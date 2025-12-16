@@ -24,7 +24,7 @@ struct PlacePinApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MapView()
+            RootTabView()
                 .environmentObject(userLocationViewModel)
                 .environmentObject(mapViewModel)
                 .environmentObject(router)
