@@ -14,7 +14,7 @@ import SwiftUI
 struct RoundImageButton: View {
     
     var imageName: String
-    @State var label: String?
+    var label: String?
     var backgroundColor: Color
     var foregroundColor: Color = .white
     var action: () -> ()

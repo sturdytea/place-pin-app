@@ -24,11 +24,6 @@ struct MapView: View {
     
     @State private var cameraPosition = MapCameraPosition.userLocation(fallback: .automatic)
     @State private var searchQuery = ""
-    @State private var isPresented = false
-    @State private var areGettingDirections = false
-    @State private var isRouteDisplaying = false
-    @State private var route: MKRoute?
-    @State private var routeDestination:MKMapItem?
     @State private var bottomSheetPosition: BottomSheetPosition = .relative(0.25)
     
     // MARK: - Body
@@ -40,12 +35,10 @@ struct MapView: View {
         .environmentObject(locationViewModel)
         .environmentObject(router)
         .onChange(of: mapViewModel.selectedItem) { _, newValue in
-            isPresented = newValue != nil
             if let newValue {
                 focusOnPlace(newValue)
-                router.sheetView = .placeDetails
-                router.isSheetPresented = true
                 mapViewModel.clearRoute()
+                router.showPlaceDetails(for: newValue)
             }
         }
         .bottomSheet(bottomSheetPosition: $bottomSheetPosition, switchablePositions: sheetDetents)
@@ -93,9 +86,7 @@ struct MapView: View {
             SearchSheetView()
         case .placeDetails:
             LocationDetailsSheetView(
-                item: $mapViewModel.selectedItem,
-                isPresented: $router.isSheetPresented,
-                areGettingDirections: $areGettingDirections
+                item: $mapViewModel.selectedItem
             )
         case .directions:
             DirectionsSheetView()
