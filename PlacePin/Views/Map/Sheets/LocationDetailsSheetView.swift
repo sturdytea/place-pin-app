@@ -9,8 +9,8 @@
 //
     
 
-import SwiftUI
 import MapKit
+import SwiftUI
 
 struct LocationDetailsSheetView: View {
     
@@ -23,77 +23,109 @@ struct LocationDetailsSheetView: View {
     // MARK: - Variables
     
     @Binding var item: MKMapItem?
-    @State var isPresented: Bool
+    @Binding var isPresented: Bool
     @Binding var areGettingDirections: Bool
     @State private var lookAroundScene: MKLookAroundScene?
     
     // MARK: - Body
     
     var body: some View {
-        VStack {
-            ScrollView(.vertical) {
-                VStack {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item?.placemark.name ?? "Should be name")
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                            Text(item?.placemark.title ?? "Title")
-                                .font(.footnote)
-                                .foregroundStyle(.gray)
-                                .lineLimit(2)
-                                .padding(.trailing)
-                        }
-                        Spacer()
-                        Button {
+        ZStack {
+            VStack {
+                HStack {
+                    Spacer()
+                    RoundImageButton(
+                        imageName: "xmark",
+                        backgroundColor: .clear,
+                        foregroundColor: .gray,
+                        action: {
                             isPresented.toggle()
                             item = nil
                             router.selectedItem = item
                             router.sheetView = .home
                             router.isSheetPresented = true
                             mapViewModel.deselectItem()
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundStyle(.gray, Color(.systemGray6))
-                        }
-                    } // HStack
-                    HStack(alignment: .bottom) {
-                        RoundImageButton(
-                            imageName: "arrow.turn.up.right",
-                            backgroundColor: .green,
-                            action: {
-                                areGettingDirections = true
-                                router.sheetView = .directions
-                                
-                                guard
-                                    let destination = item,
-                                    let userCoordinate = locationViewModel.coordinate
-                                else {
-                                    print("Missing destination or user location")
-                                    return
-                                }
-                                mapViewModel.fetchRoute(to: destination, userCoordinate: userCoordinate)
-                            })
-                        Spacer()
-                    }
-                    .padding(.vertical, 8)
-
-                    if let scene = lookAroundScene {
-                        LookAroundPreview(initialScene: scene)
-                            .frame(height: 200)
-                            .cornerRadius(12)
-                            .padding()
-                    } else {
-                        EmptyView()
-                    }
-                } // VStack
+                        })
+                }
+                .padding()
+                Spacer()
             }
-//            VStack {
-//            }
+            VStack {
+                ScrollView(.vertical) {
+                    VStack {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(item?.placemark.name ?? "Should be name")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                if let category = item?.pointOfInterestCategory {
+                                    Text(category.displayName)
+                                        .font(.subheadline)
+                                        .padding(.bottom)
+                                }
+                                Text(item?.placemark.title ?? "Title")
+                                    .font(.footnote)
+                                    .foregroundStyle(.gray)
+                                    .lineLimit(2)
+                                    .padding(.trailing)
+                            }
+                            Spacer()
+                        } // HStack
+                        HStack(alignment: .bottom) {
+                            RoundImageButton(
+                                imageName: "arrow.turn.up.right",
+                                label: "Get Direction",
+                                backgroundColor: .green,
+                                action: {
+                                    areGettingDirections = true
+                                    router.sheetView = .directions
+                                    guard
+                                        let destination = item,
+                                        let userCoordinate = locationViewModel.coordinate
+                                    else {
+                                        print("Missing destination or user location")
+                                        return
+                                    }
+                                    mapViewModel.fetchRoute(to: destination, userCoordinate: userCoordinate)
+                                })
+                            Spacer()
+                        }
+                        .padding(.vertical, 8)
+                        if let scene = lookAroundScene {
+                            LookAroundPreview(initialScene: scene)
+                                .frame(height: 200)
+                                .cornerRadius(12)
+                        } else {
+                            EmptyView()
+                        }
+                        HStack {
+                            VStack(alignment: .leading, spacing: 16) {
+                                if let phone = item?.phoneNumber {
+                                    HStack {
+                                        Image(systemName: "phone")
+                                            .foregroundStyle(.green)
+                                        Text(phone)
+                                            .font(.subheadline)
+                                    }
+                                }
+                                if let url = item?.url {
+                                    HStack {
+                                        Image(systemName: "globe")
+                                            .foregroundStyle(.orange)
+                                        Link(url.absoluteString, destination: url)
+                                            .font(.subheadline)
+                                            .lineLimit(1)
+                                    }
+                                }
+                            }
+                            Spacer()
+                        }
+                        .padding(.top, 12)
+                    } // VStack
+                    .padding()
+                }
+            }
         }
-        .padding()
         .onAppear {
             fetchLookAroundPreview()
         }
@@ -116,7 +148,7 @@ struct LocationDetailsSheetView: View {
 }
 
 #Preview {
-    LocationDetailsSheetView(item: .constant(nil), isPresented: true, areGettingDirections: .constant(false))
+    LocationDetailsSheetView(item: .constant(nil), isPresented: .constant(true), areGettingDirections: .constant(false))
         .environmentObject(UserLocationViewModel())
         .environmentObject(MapViewModel())
         .environmentObject(Router())

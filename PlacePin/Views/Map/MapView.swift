@@ -39,33 +39,22 @@ struct MapView: View {
         }
         .environmentObject(locationViewModel)
         .environmentObject(router)
-        .onChange(of: mapViewModel.selectedItem) { oldValue, newValue in
+        .onChange(of: mapViewModel.selectedItem) { _, newValue in
             isPresented = newValue != nil
-            if newValue != nil {
-                router.selectedItem = newValue
+            if let newValue {
+                focusOnPlace(newValue)
                 router.sheetView = .placeDetails
                 router.isSheetPresented = true
                 mapViewModel.clearRoute()
             }
         }
-//        .sheet(isPresented: $router.isSheetPresented) {
-//            sheetContent
-//                .environmentObject(locationViewModel)
-//                .environmentObject(mapViewModel)
-//                .environmentObject(router)
-//                .presentationDragIndicator(.visible)
-//                .presentationDetents(sheetDetents)
-//                .presentationBackgroundInteraction(sheetBackgroundInteraction)
-//                .presentationCornerRadius(25)
-//                .interactiveDismissDisabled()
-//        }
-        .bottomSheet(bottomSheetPosition: $bottomSheetPosition, switchablePositions: sheetDetents) {
+        .bottomSheet(bottomSheetPosition: $bottomSheetPosition, switchablePositions: sheetDetents)
+        {
             sheetContent
                 .environmentObject(locationViewModel)
                 .environmentObject(mapViewModel)
                 .environmentObject(router)
                 .presentationDragIndicator(.visible)
-//                .presentationDetents(sheetDetents)
                 .presentationBackgroundInteraction(sheetBackgroundInteraction)
                 .presentationCornerRadius(25)
                 .interactiveDismissDisabled()
@@ -75,12 +64,12 @@ struct MapView: View {
     // MARK: - Map Content
     
     private var mapContent: some View {
-        Map(initialPosition: cameraPosition, selection: $mapViewModel.selectedItem) {
-            ForEach(mapViewModel.searchResults, id: \.self) { result in
+        Map(position: $cameraPosition, selection: $mapViewModel.selectedItem) {
+            ForEach(mapViewModel.searchResults, id: \.name) { result in
                 let placemark = result.placemark
                 Marker(placemark.name ?? "", coordinate: placemark.coordinate)
+                    .tag(result)
             }
-            
             if let route = mapViewModel.route {
                 MapPolyline(route.polyline)
                     .stroke(.blue, lineWidth: 6)
@@ -88,8 +77,10 @@ struct MapView: View {
         }
         .mapStyle(.standard(elevation: .realistic))
         .mapControls {
-            MapUserLocationButton()
-            MapPitchToggle()
+            Group {
+                MapUserLocationButton()
+                MapPitchToggle()
+            }
         }
     }
     
@@ -102,8 +93,8 @@ struct MapView: View {
             SearchSheetView()
         case .placeDetails:
             LocationDetailsSheetView(
-                item: $router.selectedItem,
-                isPresented: router.isSheetPresented,
+                item: $mapViewModel.selectedItem,
+                isPresented: $router.isSheetPresented,
                 areGettingDirections: $areGettingDirections
             )
         case .directions:
@@ -137,6 +128,19 @@ struct MapView: View {
     }
     
     // MARK: - Helpers
+    
+    private func focusOnPlace(_ item: MKMapItem) {
+        let coordinate = item.placemark.coordinate
+        withAnimation(.easeInOut) {
+            cameraPosition = .region(
+                MKCoordinateRegion(
+                    center: coordinate,
+                    latitudinalMeters: 800,
+                    longitudinalMeters: 800
+                )
+            )
+        }
+    }
 }
 
 #Preview {

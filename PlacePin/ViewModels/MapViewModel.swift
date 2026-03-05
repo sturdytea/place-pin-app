@@ -22,6 +22,7 @@ class MapViewModel: ObservableObject {
     @Published var isRouteDisplaying: Bool = false
     @Published var selectedTransport: TransportType = .driving
     
+    @MainActor
     func searchPlaces(userRequest: String, userCoordinate: CLLocationCoordinate2D) {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = userRequest

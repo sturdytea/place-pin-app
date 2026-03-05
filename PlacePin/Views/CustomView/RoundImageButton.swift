@@ -20,24 +20,45 @@ struct RoundImageButton: View {
     var action: () -> ()
     
     var body: some View {
-        Button {
-            action()
-        } label: {
+        if #available(iOS 26.0, *) {
+            Button {
+                action()
+            } label: {
                 Image(systemName: imageName)
                     .resizable()
                     .frame(width: 18, height: 18, alignment: .center)
                     .padding(.vertical)
                     .padding(label != nil ? .leading: .horizontal)
-            if label != nil {
-                Text(label!)
-                    .font(.callout)
-                    .fontWeight(.bold)
-                    .padding(.trailing)
+                if label != nil {
+                    Text(label!.capitalized)
+                        .font(.callout)
+                        .fontWeight(.bold)
+                        .padding(.trailing)
+                }
             }
+            .foregroundStyle(foregroundColor)
+            .clipShape(Capsule())
+            .glassEffect(.regular.tint(backgroundColor).interactive())
+        } else {
+            Button {
+                action()
+            } label: {
+                Image(systemName: imageName)
+                    .resizable()
+                    .frame(width: 18, height: 18, alignment: .center)
+                    .padding(.vertical)
+                    .padding(label != nil ? .leading: .horizontal)
+                if label != nil {
+                    Text(label!.capitalized)
+                        .font(.callout)
+                        .fontWeight(.bold)
+                        .padding(.trailing)
+                }
+            }
+            .foregroundStyle(foregroundColor)
+            .background(backgroundColor)
+            .clipShape(Capsule())
         }
-        .foregroundStyle(foregroundColor)
-        .background(backgroundColor)
-        .clipShape(Capsule())
     }
 }
 
