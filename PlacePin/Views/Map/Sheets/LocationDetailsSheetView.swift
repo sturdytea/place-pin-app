@@ -30,7 +30,7 @@ struct LocationDetailsSheetView: View {
     
     var body: some View {
         VStack {
-            ScrollView(.vertical) {
+//            ScrollView(.vertical) {
                 VStack {
                     HStack(alignment: .top) {
                         VStack(alignment: .leading) {
@@ -109,7 +109,7 @@ struct LocationDetailsSheetView: View {
                     .padding(.top, 12)
                 } // VStack
                 .padding()
-            }
+            
         }
         .onAppear {
             fetchLookAroundPreview()
