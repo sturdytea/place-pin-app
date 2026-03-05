@@ -24,6 +24,8 @@ struct SearchSheetView: View {
     
     @State private var searchQuery = ""
     
+    @FocusState private var isSearchFocused: Bool
+    
     // MARK: - Body 
     
     var body: some View {
@@ -31,8 +33,14 @@ struct SearchSheetView: View {
             TextField("Search here...", text: $searchQuery)
                 .textFieldStyle(RoundedTextFieldStyle())
                 .padding()
+                .focused($isSearchFocused)
                 .onSubmit {
                     Task { await searchPlaces() }
+                }
+                .onChange(of: isSearchFocused) { _, isFocused in
+                    if isFocused {
+                        mapViewModel.expandSearchSheet()
+                    }
                 }
             ScrollView {
                 LazyVStack(spacing: 8) {

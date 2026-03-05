@@ -23,7 +23,6 @@ struct MapView: View {
     // MARK: - Properties
     
     @State private var cameraPosition = MapCameraPosition.userLocation(fallback: .automatic)
-    @State private var searchQuery = ""
     @State private var bottomSheetPosition: BottomSheetPosition = .relative(0.25)
     
     // MARK: - Body
@@ -34,11 +33,28 @@ struct MapView: View {
         }
         .environmentObject(locationViewModel)
         .environmentObject(router)
+        .onAppear {
+            mapViewModel.expandSheetAction = {
+                withAnimation(.easeInOut) {
+                    bottomSheetPosition = .relative(0.95)
+                }
+            }
+        }
         .onChange(of: mapViewModel.selectedItem) { _, newValue in
             if let newValue {
                 focusOnPlace(newValue)
                 mapViewModel.clearRoute()
                 router.showPlaceDetails(for: newValue)
+            }
+        }
+        .onChange(of: router.sheetView) { _, newValue in
+            switch newValue {
+            case .home:
+                bottomSheetPosition = .relative(0.25)
+            case .placeDetails:
+                bottomSheetPosition = .relative(0.35)
+            case .directions:
+                bottomSheetPosition = .relative(0.30)
             }
         }
         .bottomSheet(bottomSheetPosition: $bottomSheetPosition, switchablePositions: sheetDetents)
@@ -103,18 +119,18 @@ struct MapView: View {
         case .placeDetails:
             [.relative(0.25), .relative(0.45), .relative(0.95)]
         case .directions:
-            [.relative(0.15)]
+            [.relative(0.30)]
         }
     }
     
     private var sheetBackgroundInteraction: PresentationBackgroundInteraction {
         switch router.sheetView {
         case .home:
-                .enabled(upThrough: .fraction(0.25))
+                .enabled(upThrough: .fraction(0.45))
         case .placeDetails:
-                .enabled(upThrough: .fraction(0.25))
+                .enabled(upThrough: .fraction(0.45))
         case .directions:
-                .enabled(upThrough: .fraction(0.15))
+                .enabled(upThrough: .fraction(0.45))
         }
     }
     

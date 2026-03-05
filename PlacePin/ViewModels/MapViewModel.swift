@@ -22,6 +22,8 @@ class MapViewModel: ObservableObject {
     @Published var isRouteDisplaying: Bool = false
     @Published var selectedTransport: TransportType = .driving
     
+    var expandSheetAction: (() -> Void)?
+    
     @MainActor
     func searchPlaces(userRequest: String, userCoordinate: CLLocationCoordinate2D) {
         let request = MKLocalSearch.Request()
@@ -43,6 +45,10 @@ class MapViewModel: ObservableObject {
                 print("Search error: \(error)")
             }
         }
+    }
+
+    func expandSearchSheet() {
+        expandSheetAction?()
     }
     
     func fetchRoute(to destination: MKMapItem, userCoordinate: CLLocationCoordinate2D) {
